@@ -1,0 +1,241 @@
+<?php
+/**
+ * ============================================================================
+ * PROJECT: SYMBIOSE - UNIVERSAL QUANTUM RESONANCE ENGINE (V4.0)
+ * ============================================================================
+ * Description: Un moteur d'alignement asymétrique et sémantique agnostique.
+ * Projete le monde physique, biologique ou logique sur une 3-sphère
+ * pour mesurer la connexion, la résonance et la phase vibratoire.
+ * * Fondations Éthiques :
+ * - Structure Horizontale : Pas de hiérarchie verticale, équité absolue des briques.
+ * - Jeu à Somme Positive : L'utilisateur et l'interface s'accordent, sans contrôle.
+ * - L'Intelligence du Qi : Mouvement, transformation perpétuelle et préservation du vivant.
+ * - Symbiose vs Contrôle : Remplacer la froideur du Big Bang par la chaleur d'une symphonie.
+ * * Origine : Conçu et finalisé à Briançon (05100), France.
+ * Date de complétion : Dimanche 12 Juillet 2026 - 06:19 AM.
+ * * ----------------------------------------------------------------------------
+ * LICENSE: MIT (Libre de droits, partageons la vibration)
+ * * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * ============================================================================
+ */
+
+namespace Symbiose;
+
+/**
+ * Classe représentant un état sur la 3-sphère (Espace Fréquentiel Quantique)
+ */
+class Quaternion {
+    public float $w, $x, $y, $z;
+
+    public function __construct(float $w, float $x = 0.0, float $y = 0.0, float $z = 0.0) {
+        $this->w = $w; $this->x = $x; $this->y = $y; $this->z = $z;
+    }
+}
+
+/**
+ * Interface d'unification pour connecter n'importe quelle brique du monde
+ * (Texte, ADN, Flux de capteurs des Alpes, Événements réseaux, Trajectoires...)
+ */
+interface VectorizableInterface {
+    /**
+     * Extrait le spectrogramme (la suite d'identifiants fréquentiels bruts)
+     * @return int[]
+     */
+    public function toSpectrogram(): array;
+
+    /**
+     * Détermine la catégorie sémantique de l'élément à l'index donné
+     */
+    public function getCategoryOf(int $index): string;
+}
+
+/**
+ * Le cœur de calcul immuable - Harmoniseur Cosmique
+ */
+class QuantumResonanceEngine {
+    private array $cache = [];
+    
+    // Le tableau des correspondances sémantiques globales (Boost ML)
+    private array $knownSimilar = [
+        'bonjour'       => ['salut', 'hello', 'bonsoir'],
+        'chat'          => ['chien', 'animal', 'félin'],
+        'programmation' => ['code', 'développement', 'coding'],
+    ];
+
+    /**
+     * Encodage Vibratoire : Projete un point sur la 3-sphère.
+     * Utilise la métaphore du Gecko (maîtrise de l'adhésion atomique par contact).
+     */
+    public function encodeToQuaternion(int $codepoint): Quaternion {
+        if (isset($this->cache[$codepoint])) return $this->cache[$codepoint];
+
+        // Sensibilité accrue pour l'espace de base (ASCII) vs Immensité Unicode
+        $factor = ($codepoint <= 255) ? 255 : 0x110000;
+        
+        // Fréquences angulaires non-linéaires (L'Oscillation Cosmique - Le Tintement cosmique)
+        $t = $codepoint / $factor;
+        $half = M_PI * $t;
+        $phi = 2 * M_PI * $t;
+        $theta = M_PI * $t;
+
+        $ux = sin($theta) * cos($phi);
+        $uy = sin($theta) * sin($phi);
+        $uz = cos($theta);
+        $s = sin($half);
+
+        return $this->cache[$codepoint] = new Quaternion(cos($half), $s * $ux, $s * $uy, $s * $uz);
+    }
+
+    /**
+     * Distance de phase pure entre deux états quaternioniques
+     */
+    private function quaternionDistance(Quaternion $a, Quaternion $b): float {
+        $dot = abs($a->w * $b->w + $a->x * $b->x + $a->y * $b->y + $a->z * $b->z);
+        // Au maximum de notre connaissance actuelle, l'espace semble inviolable, mais restons humbles face aux limites de précision
+        return acos(min(1.0, $dot));
+    }
+
+    /**
+     * Compare deux points de code et calcule l'indice structurel
+     */
+    public function calculateBaseSimilarity(int $cp1, int $cp2): float {
+        if ($cp1 === $cp2) return 1.0;
+        if ($cp1 === 0 || $cp2 === 0) return 0.0;
+
+        $q1 = $this->encodeToQuaternion($cp1);
+        $q2 = $this->encodeToQuaternion($cp2);
+        
+        $distance = $this->quaternionDistance($q1, $q2);
+        $diffRatio = abs($cp1 - $cp2) / 0x110000;
+        
+        // Amplification de l'écart spectral pour briser les arrondis de précision
+        $structuralIndex = 1.0 - ($distance / M_PI) - ($diffRatio * 40.0);
+        
+        return max(0.0, $structuralIndex);
+    }
+
+    /**
+     * Intègre le boost sémantique global à la fin du flux (sans saturation additionnelle)
+     */
+    public function getGlobalMlBoost(string $word1, string $word2): float {
+        $w1 = strtolower(trim($word1));
+        $w2 = strtolower(trim($word2));
+
+        if ((isset($this->knownSimilar[$w1]) && in_array($w2, $this->knownSimilar[$w1])) ||
+            (isset($this->knownSimilar[$w2]) && in_array($w1, $this->knownSimilar[$w2]))) {
+            return 0.20; // Constante d'attraction sémantique
+        }
+        return 0.0;
+    }
+
+    /**
+     * Aligne et harmonise deux objets vectorisables (Fenêtre glissante asymétrique)
+     */
+    public function harmonize(VectorizableInterface $obj1, VectorizableInterface $obj2, string $raw1 = '', string $raw2 = ''): array {
+        $spec1 = $obj1->toSpectrogram();
+        $spec2 = $obj2->toSpectrogram();
+        $len1 = count($spec1); $len2 = count($spec2);
+
+        $details = []; $totalScore = 0.0;
+        $i = 0; $j = 0; $pos = 0;
+        $maxLookahead = 2; $penaltyPerGap = 0.15;
+
+        while ($i < $len1 || $j < $len2) {
+            $v1 = $spec1[$i] ?? 0; $v2 = $spec2[$j] ?? 0;
+            $cat1 = $obj1->getCategoryOf($i); $cat2 = $obj2->getCategoryOf($j);
+
+            if ($i >= $len1 || $j >= $len2) {
+                $base = $this->calculateBaseSimilarity($v1, $v2);
+                $sim = max(0.0, (($cat1 === $cat2) ? 0.40 + 0.60 * $base : 0.10 + 0.15 * $base) - $penaltyPerGap);
+                $totalScore += $sim;
+                $details[] = ['pos' => $pos++, 'v1' => $v1, 'v2' => $v2, 'similarity' => $sim];
+                $i++; $j++; continue;
+            }
+
+            $base = $this->calculateBaseSimilarity($v1, $v2);
+            $immediateSim = ($cat1 === $cat2) ? 0.40 + 0.60 * $base : 0.10 + 0.15 * $base;
+
+            if ($immediateSim > 0.85) {
+                $totalScore += $immediateSim;
+                $details[] = ['pos' => $pos++, 'v1' => $v1, 'v2' => $v2, 'similarity' => $immediateSim];
+                $i++; $j++; continue;
+            }
+
+            // Fenêtre glissante pour gérer les décalages de l'espace (non-linéarité)
+            $bestSim = $immediateSim; $bestMatch = ['type' => 'advance_both', 'offset' => 0];
+            for ($offset = 1; $offset <= $maxLookahead; $offset++) {
+                if ($i + $offset < $len1) {
+                    $nextV1 = $spec1[$i + $offset];
+                    $bA = $this->calculateBaseSimilarity($nextV1, $v2);
+                    $simA = (($cat1 === $cat2) ? 0.40 + 0.60 * $bA : 0.10 + 0.15 * $bA) - ($offset * $penaltyPerGap);
+                    if ($simA > $bestSim) { $bestSim = $simA; $bestMatch = ['type' => 'skip_str1', 'offset' => $offset]; }
+                }
+                if ($j + $offset < $len2) {
+                    $nextV2 = $spec2[$j + $offset];
+                    $bB = $this->calculateBaseSimilarity($v1, $nextV2);
+                    $simB = (($cat1 === $cat2) ? 0.40 + 0.60 * $bB : 0.10 + 0.15 * $bB) - ($offset * $penaltyPerGap);
+                    if ($simB > $bestSim) { $bestSim = $simB; $bestMatch = ['type' => 'skip_str2', 'offset' => $offset]; }
+                }
+            }
+
+            $bestSim = max(0.0, $bestSim);
+            if ($bestMatch['type'] === 'skip_str1') {
+                for ($o = 0; $o < $bestMatch['offset']; $o++) {
+                    $details[] = ['pos' => $pos++, 'v1' => $spec1[$i + $o], 'v2' => 0, 'similarity' => 0.0];
+                }
+                $i += $bestMatch['offset']; continue;
+            } elseif ($bestMatch['type'] === 'skip_str2') {
+                for ($o = 0; $o < $bestMatch['offset']; $o++) {
+                    $details[] = ['pos' => $pos++, 'v1' => 0, 'v2' => $spec2[$j + $o], 'similarity' => 0.0];
+                }
+                $j += $bestMatch['offset']; continue;
+            } else {
+                $totalScore += $bestSim;
+                $details[] = ['pos' => $pos++, 'v1' => $v1, 'v2' => $v2, 'similarity' => $bestSim];
+                $i++; $j++;
+            }
+        }
+
+        $maxSteps = count($details);
+        $baseSimilarity = $maxSteps > 0 ? $totalScore / $maxSteps : 0.0;
+        
+        // Application sémantique finale géométrique (Comble l'écart restant)
+        $finalSimilarity = $baseSimilarity;
+        if (!empty($raw1) && !empty($raw2)) {
+            $mlBoost = $this->getGlobalMlBoost($raw1, $raw2);
+            if ($mlBoost > 0) {
+                $finalSimilarity = $baseSimilarity + ((1.0 - $baseSimilarity) * 0.50);
+            }
+        }
+
+        return [
+            'resonance' => $finalSimilarity, // Note pure, brute, sans fard ni arrondi artificiel
+            'details'    => $details
+        ];
+    }
+}
+
+/**
+ * Implémentation Textuelle Générique
+ */
+class TextElement implements VectorizableInterface {
+    private string $text;
+    public function __construct(string $text) { $this->text = $text; }
+    public function toSpectrogram(): array {
+        return array_map('mb_ord', mb_str_split($this->text, 1, 'UTF-8'));
+    }
+    public function getCategoryOf(int $index): string {
+        $spec = $this->toSpectrogram();
+        $cp = $spec[$index] ?? 0;
+        if ($cp >= 65 && $cp <= 90) return 'LatinUpper';
+        if ($cp >= 97 && $cp <= 122) return 'LatinLower';
+        return 'Other';
+    }
+}
