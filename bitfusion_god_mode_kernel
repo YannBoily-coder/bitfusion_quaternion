@@ -1,0 +1,63 @@
+import torch
+from torch.utils.cpp_extension import load
+import numpy as np
+
+# Compilation à la volée du Kernel CUDA natif "God Mode"
+bitfusion_cuda = load(
+    name="bitfusion_cuda",
+    sources=["bitfusion_god_mode.cu"], # Point sur ton fichier ultra-optimisé
+    verbose=True
+)
+
+def run_cuda_bitfusion_god_mode(main_str, target_strings):
+    # Convertir les chaînes en points de code Unicode (int32)
+    cp_main = torch.tensor([ord(c) for c in main_str], dtype=torch.int32).cuda()
+    
+    L1 = len(cp_main)
+    L2 = max(len(s) for s in target_strings) if target_strings else 0
+    N = len(target_strings)
+    
+    if N == 0:
+        return np.array([])
+    
+    # Création de la matrice 2D contenant toutes les chaînes cibles alignées
+    matrix_targets = np.zeros((N, L2), dtype=np.int32)
+    for idx, s in enumerate(target_strings):
+        for pos, c in enumerate(s):
+            matrix_targets[idx, pos] = ord(c)
+            
+    cp_targets = torch.from_numpy(matrix_targets).cuda()
+    output_scores = torch.zeros(N, dtype=torch.float32).cuda()
+    
+    # Configuration de la grille CUDA (Blocks de 256 threads)
+    threads_per_block = 256
+    blocks_per_grid = (N + threads_per_block - 1) // threads_per_block
+    
+    # --- LA MODIFICATION CRITIQUE ICI ---
+    # Calcul de la taille de la Mémoire Partagée (SRAM) requise par BLOC de threads.
+    # On stocke L1 entiers (int32 = 4 octets chacun)
+    shared_memory_bytes = L1 * 4 
+    
+    print(f"🚀 Déploiement du Kernel God Mode sur {blocks_per_grid} Blocs CUDA...")
+    print(f"🧠 SRAM allouée par bloc : {shared_memory_bytes} octets pour stocker '{main_str}'")
+    
+    # Exécution du Kernel avec la configuration étendue pour la mémoire partagée
+    # (Syntaxe PyTorch : on passe le dictionnaire de configuration ou les arguments directs)
+    bitfusion_cuda.bitfusion_god_mode_kernel(
+        cp_main, cp_targets, output_scores, 
+        L1, L2, N, 0.15,
+        shared_memory_bytes=shared_memory_bytes # Injection de la SRAM dans le hardware
+    )
+    
+    # Récupération des scores calculés à la volée
+    scores = output_scores.cpu().numpy()
+    return scores
+
+# --- TEST DE CHARGE MASSIVE ---
+if __name__ == "__main__":
+    main_word = "Bonjour"
+    test_dataset = ["Bonsoir", "Salut", "B0nj0ur", "Hello", "Qi", "106.5 FM"] * 15000
+    
+    print(f"⚡ Traitement de {len(test_dataset):,} comparaisons géométriques (SRAM Active)...")
+    scores = run_cuda_bitfusion_god_mode(main_word, test_dataset)
+    print(f"✅ Terminé ! Premier score calculé : {scores[0]:.4f}")
