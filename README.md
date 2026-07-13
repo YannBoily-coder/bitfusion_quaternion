@@ -3,58 +3,62 @@ compare two str and add a score to check is same or % with bitfusion_quaternion.
 Same with SemanticEngine.php and SemanticEngine_test.php but return array
 Idea helped with Google Gemini and Grock, Vibe coded
 Credit not @me
-You can use it for all project, you can test it: https://www.chezyann.net/bitfusion_quaternion.php
+You can use it for all project, you can test it: https://www.chezyann.net/bitfusion_quaternion_DoubleTextarea.php
 https://share.gemini.google/DlnepVfb6w9v
 https://x.com/i/grok/share/c6c518124dd34cd2bb8963526fb5bcb3
-# 🌌 BITFUSION.AI - Quaternion Semantic Engine (v2.1)
+# BitFusion Quaternion
 
-> « Un moteur de similarité sémantique ultra-léger basé sur les quaternions » Conçue par Yann Boily.
-> Une architecture hybride alliant la sensibilité géométrique tridimensionnelle à l'instantanéité algorithmique du temps constant.
+Un moteur léger et expérimental de **similarité entre chaînes de caractères** basé sur une représentation géométrique avec des **quaternions**.
 
----
-
-## 🧠 Le Concept : Alignement Symbiotique vs Force Brute
-
-Là où les modèles massifs (LLM) exploitent des milliards de paramètres probabilistes pour évaluer le sens, **BitFusion.AI** utilise une projection géométrique pure. Chaque point de code (caractère) est projeté sous forme de vecteur sur une sphère unitaire à l'aide de rotations quaternioniques.
-
-* **Mesure du monde :** Analyse structurelle brute des catégories de caractères.
-* **Sentiment de la connexion :** Résonance angulaire pure via le produit scalaire des Quaternions.
+Au lieu d'utiliser des embeddings ou des modèles lourds, chaque caractère est projeté dans un espace quaternionique. La similarité est ensuite calculée via la distance angulaire entre ces représentations.
 
 ---
 
-## 🏎️ Les Deux Piliers Algorithmiques
+## 🎮 Démo en ligne
 
-### 1. La Force Brute Atomique : Optimisation Silicium (CUDA)
-Pour les scans de flux massifs, l'algorithme est transposé directement au niveau des transistors en **CUDA C++ (God Mode)** :
-* **SRAM Partagée (Shared Memory) :** La chaîne de référence est injectée dans la mémoire cache L1 des cœurs graphiques, éliminant la latence VRAM.
-* **Instructions FMA (`fmaf`) :** Fusion matérielle des multiplications et additions en un seul cycle d'horloge.
-* **Performance :** Évalue des flux massifs à une vitesse fulgurante (~30 ms pour 100k blocs).
+Tu peux tester directement ici :
 
-### 2. L'Instant Présent : L'Indexation Directe ($O(1)$)
-En exploitant des structures en **Clés Sémantiques / Arbres de Hachage**, le système s'affranchit du volume de données. 
-* L'accès aux correspondances vibratoires se fait en **temps constant $O(1)$**.
-* Temps d'exécution : **< 1 milliseconde ⚡**, que la matrice contienne 10 lignes ou des milliards d'éléments.
+→ **[BitFusion Quaternion - Double Textarea](https://www.chezyann.net/bitfusion_quaternion_DoubleTextarea.php)**
+
+La démo permet de comparer deux textes et d'afficher les meilleurs alignements caractère par caractère avec leur score.
 
 ---
 
-## 🛠️ Architecture du Code (PHP Core Model)
+## 🔍 Comment ça marche ?
 
-Le noyau géométrique repose sur la transformation sinusoïdale des codepoints Unicode en repères spatiaux $X, Y, Z$ stabilisés par un cache statique local :
+L’idée est d’encoder chaque caractère (point de code Unicode) sous forme de **quaternion** (un vecteur 4D sur une sphère unitaire) :
+
+- On utilise une projection trigonométrique (`sin` / `cos`) pour transformer le codepoint en quaternion.
+- La similarité entre deux caractères repose sur :
+  - La **distance angulaire** entre leurs quaternions (produit scalaire)
+  - Leur **catégorie sémantique** (lettre majuscule, minuscule, chiffre, ponctuation, espace…)
+- L’algorithme gère aussi les petits décalages entre les chaînes grâce à une fenêtre de lookahead.
+
+Le résultat est un score global entre **0 et 1** (ou en pourcentage).
+
+C’est une approche **structurelle et géométrique**, pas une similarité sémantique profonde comme avec des transformers.
+
+---
+
+## 📁 Fichiers principaux
+
+| Fichier                              | Description                                      |
+|--------------------------------------|--------------------------------------------------|
+| `bitfusion_quaternion.php`           | Noyau principal (comparaison de 2 chaînes)       |
+| `bitfusion_quaternion_DoubleTextarea.php` | Démo interactive avec deux zones de texte     |
+| `SemanticEngine.php`                 | Version qui retourne un tableau de résultats     |
+
+Une version **CUDA C++** (God Mode) existe également pour traiter de gros volumes rapidement.
+
+---
+
+## 🚀 Utilisation simple
 
 ```php
-function encodeToVaryingQBitFusion($codepoint) {
-    static $cache = [];
-    if (isset($cache[$codepoint])) return $cache[$codepoint];
+require 'bitfusion_quaternion.php';
 
-    $factor = ($codepoint <= 255) ? 255 : 0x110000;
-    $t = $codepoint / $factor;
-    
-    // Projection harmonique sur la sphère unitaire
-    $half = M_PI * $t;
-    $phi = 2 * M_PI * $t;
-    $theta = M_PI * $t;
-
-    $ux = sin($theta) * cos($phi);$uy = sin($theta) * sin($phi);
+$result = compareStringsWithQuaternion("Bonjour le monde", "Bonjoure le mond");
+echo $result['score']; // Score de similarité
     $uz = cos($theta);
     $s = sin($half);
 
