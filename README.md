@@ -8,7 +8,7 @@ https://share.gemini.google/DlnepVfb6w9v
 https://x.com/i/grok/share/c6c518124dd34cd2bb8963526fb5bcb3
 # 🌌 BITFUSION.AI - Quaternion Semantic Engine (v2.1)
 
-> **La plus petite IA de développement au monde.** Conçue par Yann Boily.
+> « Un moteur de similarité sémantique ultra-léger basé sur les quaternions » Conçue par Yann Boily.
 > Une architecture hybride alliant la sensibilité géométrique tridimensionnelle à l'instantanéité algorithmique du temps constant.
 
 ---
