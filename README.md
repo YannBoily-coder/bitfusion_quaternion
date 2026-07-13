@@ -64,3 +64,17 @@ echo $result['score']; // Score de similarité
 
     return $cache[$codepoint] = new Quaternion(cos($half), $s*$ux, $s*$uy, $s*$uz);
 }
+
+
+ LimitationsProjet expérimental et personnel
+Pas optimisé pour la production à grande échelle
+La similarité est surtout structurelle (forme des mots), pas sémantique profonde
+Les performances dépendent de la longueur des textes
+
+ CréditsIdée et développement : Yann Boily
+Approche quaternionique inspirée et prototypée avec l’aide de Gemini et Grok.Tu peux utiliser le code librement dans tes projets. Idées d’amélioration (si tu veux contribuer)
+Ajouter plus d’exemples concrets
+Benchmark vs Levenshtein / Jaro-Winkler / embeddings légers
+Version Python ou Rust plus accessible
+Améliorer la gestion des langues non-latines
+
