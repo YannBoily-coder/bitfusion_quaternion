@@ -1,5 +1,5 @@
 # Voici la version PHP complète et fonctionnelle de l’hybride (Levenshtein + Quaternion) 
-https://www.chezyann.net/Levenshtein-Quaternion.ph
+https://www.chezyann.net/hybride_levenshtein_quaternion-v2.php
 
 # bitfusion_quaternion
 compare two str and add a score to check is same or % with bitfusion_quaternion.php
