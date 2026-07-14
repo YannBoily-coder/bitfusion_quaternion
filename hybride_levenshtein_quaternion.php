@@ -34,13 +34,13 @@
         body { background: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         canvas { background: #1e293b; border-radius: 8px; margin-bottom: 20px; }
         .panel { background: #1e293b; padding: 20px; border-radius: 8px; width: 800px; }
-        input { padding: 5px; margin: 5px; }
+        input { padding: 8px; margin: 5px; width: 300px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white; }
     </style>
 </head>
 <body>
 
     <canvas id="waveCanvas" width="800" height="200"></canvas>
-
+    
     <div class="panel">
         <h3>Moteur de Résonance (Logic Hybride Réelle)</h3>
         <input type="text" id="s1" value="Galibier" placeholder="Mot 1">
@@ -66,11 +66,12 @@
     function computeHybridScore() {
         const s1 = document.getElementById('s1').value;
         const s2 = document.getElementById('s2').value;
-        if (!s1 || !s2) return 0;
+        
+        if (s1.length === 0 || s2.length === 0) return;
 
         const levDist = levenshteinDistance(s1, s2);
         const levScore = 1 - (levDist / Math.max(s1.length, s2.length));
-
+        
         const minLen = Math.min(s1.length, s2.length);
         let qTotal = 0;
         for(let i=0; i<minLen; i++) {
@@ -80,7 +81,7 @@
 
         const finalScore = (0.65 * levScore) + (0.35 * qScore);
         document.getElementById('score').innerText = "Score de résonance : " + (finalScore * 100).toFixed(2) + "%";
-
+        
         drawWave(finalScore);
     }
 
@@ -88,23 +89,24 @@
         const canvas = document.getElementById('waveCanvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Ligne de milieu orange (travaux en cours)
-        ctx.setLineDash([5, 5]);
-        ctx.strokeStyle = '#f97316'; // Orange
+        
+        // Ligne de milieu orange
+        ctx.setLineDash([5, 5]); 
+        ctx.strokeStyle = '#f97316'; 
         ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(800, 100); ctx.stroke();
         ctx.setLineDash([]);
 
-        // Lignes de référence haute et basse
+        // Lignes de référence
         ctx.strokeStyle = '#22c55e'; ctx.beginPath(); ctx.moveTo(0, 50); ctx.lineTo(800, 50); ctx.stroke();
         ctx.strokeStyle = '#a855f7'; ctx.beginPath(); ctx.moveTo(0, 150); ctx.lineTo(800, 150); ctx.stroke();
 
         ctx.beginPath();
         ctx.lineWidth = 2;
-
-        const amplitude = score * 80;
-        const frequency = 1.0;
-
+        
+        // Normalisation : on limite l'amplitude à 45 pour rester dans les bornes (50 à 150)
+        const amplitude = Math.min(score * 80, 45); 
+        const frequency = 1.0; 
+        
         for (let x = 0; x < 800; x++) {
             const y = 100 - (Math.sin(x * 0.05 * frequency) * amplitude);
             ctx.strokeStyle = (y < 100) ? '#3b82f6' : '#ef4444';
@@ -115,8 +117,9 @@
         }
     }
 
-    document.getElementById('s1').oninput = computeHybridScore;
-    document.getElementById('s2').oninput = computeHybridScore;
+    document.getElementById('s1').addEventListener('input', computeHybridScore);
+    document.getElementById('s2').addEventListener('input', computeHybridScore);
+    
     computeHybridScore();
 </script>
 </body>
