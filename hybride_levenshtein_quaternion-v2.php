@@ -162,10 +162,32 @@ function drawAdvancedWave(score, canvasId) {
     let f = 0;
     function anim() {
         ctx.clearRect(0, 0, 400, 180);
-        ctx.strokeStyle = score > 0.7 ? '#22c55e' : '#60a5fa';
+
+        // 1. Ligne de base pointillée orange
         ctx.beginPath();
-        for(let x=0; x<400; x++) ctx.lineTo(x, 90 + Math.sin(x*0.04 + f*0.1)*30*score);
-        ctx.stroke();
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.moveTo(0, 90); ctx.lineTo(400, 90); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 2. Lignes limites haute (bleu) et basse (rouge)
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#3b82f6';
+        ctx.beginPath(); ctx.moveTo(0, 30); ctx.lineTo(400, 30); ctx.stroke();
+        ctx.strokeStyle = '#ef4444';
+        ctx.beginPath(); ctx.moveTo(0, 150); ctx.lineTo(400, 150); ctx.stroke();
+
+        // 3. Rendu segmenté dynamique de l'onde
+        ctx.lineWidth = 3;
+        for(let x=0; x<399; x++) {
+            const y1 = 90 + Math.sin(x*0.04 + f*0.1)*50*score;
+            const y2 = 90 + Math.sin((x+1)*0.04 + f*0.1)*50*score;
+            ctx.beginPath();
+            ctx.moveTo(x, y1);
+            ctx.lineTo(x+1, y2);
+            ctx.strokeStyle = y1 < 90 ? '#3b82f6' : '#ef4444';
+            ctx.stroke();
+        }
         f++; requestAnimationFrame(anim);
     }
     anim();
@@ -175,7 +197,12 @@ const tests = [
                 ["bonjour", "bonjoure"],
                 ["aboucher", "abouchai"],
                 ["chat", "chien"],
-                ["hello world", "hello word"],
+                ["Marseillais", "Parisien"],
+                ["Marseillais", "Marseille"],
+                ["Marseille", "Paris"],
+                ["hello world!", "hello word !"],
+                ["echo('hello world')", "print: hello word"],
+                ["HPI", "BPI"],
                 ["Je suis allé au marché", "Je suis allé au marché hier"],
               ];
 const container = document.getElementById('resultsList');
